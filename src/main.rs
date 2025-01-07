@@ -3,19 +3,22 @@ use pcap::Device;
 
 #[derive(Parser, Debug)]
 #[command(version, about = "pkdump is a packet sniffer written in Rust", long_about = None)]
-struct Args {
+struct PkdumpArgs {
+    /// Count
     #[arg(short, long)]
     count: Option<usize>,
 
+    /// Interface name
     #[arg(short, long)]
     interface: Option<String>,
 
+    /// List all devices
     #[arg(short, long)]
     list: bool,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
+    let args = PkdumpArgs::parse();
 
     if let Some(i) = args.interface {
         println!("Capturing on {}", i);
@@ -25,12 +28,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("{} packets requested", count);
     }
 
-    let devices = Device::list()?;
-
     if args.list {
+        let devices = Device::list()?;
+
+        println!("List of devices:");
         for device in devices.iter() {
-            println!("{}", device.name);
+            println!("  {}", device.name);
         }
+
+        return Ok(())
     }
 
     Ok(())
