@@ -10,7 +10,7 @@ use clap:: {
 #[derive(Parser, Debug)]
 #[command(version, about = "pkdump is a packet sniffer written in Rust", long_about = None)]
 pub struct PkdumpArgs {
-    /// Count
+    /// Number of packages
     #[arg(short, long)]
     pub count: Option<usize>,
 
