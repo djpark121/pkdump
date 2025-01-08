@@ -1,8 +1,14 @@
+
+
+
 use anyhow;
 use clap::Parser;
-use pcap::{Capture, Device};
+use pcap::Device;
+// use pcap::Capture
 
 mod args;
+pub mod capture;
+
 
 fn main() -> anyhow::Result<()> {
     let args = args::PkdumpArgs::parse();
@@ -26,6 +32,7 @@ fn main() -> anyhow::Result<()> {
         println!("{} packets requested", count);
     }
 
+    /*
     let mut cap = Capture::from_device(Device::lookup().unwrap().unwrap()) // open the "default" interface
         .unwrap() // assume the device exists and we are authorized to open it
         .open() // activate the handle
@@ -34,6 +41,13 @@ fn main() -> anyhow::Result<()> {
     while let Ok(packet) = cap.next_packet() {
         println!("received packet! {:?}", packet);
     }
+    */
+
+    // Note: You need to run pkdum as sudo to get any packages
+    //
+    //      sudo ./target/debug/pkdump
+    //
+    capture::listen_to_5_packages();
 
     Ok(())
 }
