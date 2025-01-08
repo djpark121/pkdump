@@ -44,11 +44,14 @@ pub fn listen_to_5_packages() -> Result<(), Box<dyn error::Error>>
     for packet in cap.iter(Codec) {
         let packet = packet?;
 
-        println!("received packet! {:?}\n", packet);
+        println!("Received packet!\nHeader: {:?}\nData: {:02X?}\n",
+                packet.header, packet.data);
 
         nn = nn - 1;
 
-        if nn <= 0 {            break;        }
+        if nn <= 0 {
+            break;
+        }
     }
 
     Ok(())
