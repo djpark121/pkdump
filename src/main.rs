@@ -1,6 +1,4 @@
 
-
-
 use anyhow;
 use clap::Parser;
 use pcap::Device;
@@ -47,7 +45,7 @@ fn main() -> anyhow::Result<()> {
     //
     //      sudo ./target/debug/pkdump
     //
-    capture::listen_to_5_packages();
+    let _ = capture::listen_to_5_packages();
 
     Ok(())
 }
