@@ -1,9 +1,13 @@
 
 use std::error;
 
-// use pcap:: { Capture, Device };
-
-use pcap::{Capture, Device, Packet, PacketCodec, PacketHeader};
+use pcap::{
+    Capture, 
+    Device, 
+    Packet, 
+    PacketCodec, 
+    PacketHeader
+};
 
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -25,33 +29,37 @@ impl PacketCodec for Codec {
     }
 }
 
-pub fn listen_to_5_packages() -> Result<(), Box<dyn error::Error>>
+pub fn listen_to_n_packages(device_name: String, count: usize) -> Result<(), Box<dyn error::Error>>
 {
     println!("ListenTo5packages");
-
-    // get the default Device
+    
     let device = Device::lookup()?.ok_or("no device available")?;
 
-    println!("  Using device: {}\n", device.name);
+    if device.name == device_name {
+        println!("  Using device: {}\n", device.name);
+ 
+        let cap = Capture::from_device(device)?
+                    .immediate_mode(true)
+                    .open()?;
 
-    let cap = Capture::from_device(device)?
-        .immediate_mode(true)
-        .open()?;
+        let mut n: usize = count;
+    
+        for packet in cap.iter(Codec) {
+            let packet = packet?;
 
-    let mut nn: i32 ;
-    nn = 5;
+            println!("Received packet!\nHeader: {:?}\nData: {:02X?}\n",
+                    packet.header, packet.data);
 
-    for packet in cap.iter(Codec) {
-        let packet = packet?;
+            n = n - 1;
 
-        println!("Received packet!\nHeader: {:?}\nData: {:02X?}\n",
-                packet.header, packet.data);
-
-        nn = nn - 1;
-
-        if nn <= 0 {
-            break;
+            if n <= 0 {
+                break;
+            }
         }
+    }
+    else {
+        // TODO(ER) - improve the error handeling in this function
+        println!("Device not found!\n");
     }
 
     Ok(())
